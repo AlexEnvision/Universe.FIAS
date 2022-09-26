@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Platforms>AnyCPU;x64;x86</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Universe.NetCore.Algorithm" Version="0.9.3.5" />
+    <PackageReference Include="Universe.NetCore.CQRS" Version="0.9.3.5" />
+    <PackageReference Include="Universe.NetCore.Windows.Forms.Controls" Version="0.9.3.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Universe.Fias.DataAccess\Universe.Fias.DataAccess.csproj" />
+    <ProjectReference Include="..\Universe.Fias.Import\Universe.Fias.Import.csproj" />
+    <ProjectReference Include="..\Universe.Fias\Universe.Fias.csproj" />
+  </ItemGroup>
+
+</Project>

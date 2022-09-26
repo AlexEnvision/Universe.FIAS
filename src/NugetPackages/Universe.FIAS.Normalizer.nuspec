@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Universe.NetCore.FIAS.Normalizer</id>
+    <version>0.9.4.1</version>
+    <authors>Alex Envision</authors>
+    <owners>Alex Envision</owners>
+    <license type="file">APACHE-2.0 LICENSE.txt</license>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Содержит функционал нормализации адресов в системе FIAS. Входит в состав Universe.Framework</description>
+	  <repository type="git" url="https://gitlab.com/AlexEnvision/Universe.FIAS" branch="master" />
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright © Alex Envision, 2019-2022</copyright>
+    <tags>Universe.Framework Address Normalizer</tags>
+    <dependencies>
+      <group targetFramework=".NETCoreApp3.1" >
+        <dependency id="Universe.NetCore.CQRS" version="0.9.3.5" />
+        <dependency id="Universe.NetCore.Diagnostic" version="0.9.3.5" />
+        <dependency id="Universe.NetCore.Types" version="0.9.3.5" />
+        <dependency id="Universe.NetCore.DataAccess" version="0.9.3.5" /> 
+        <dependency id="Universe.NetCore.Helpers" version="0.9.3.5" />
+        <dependency id="Universe.NetCore.IO" version="0.9.3.5" />
+        <dependency id="Unity" version="5.11.10" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\License\APACHE-2.0 LICENSE.txt" target="" />
+    <file src="..\Normalizer\Universe.Fias.Normalizer\bin\Release\net5.0\Universe.Fias.Normalizer.dll" target="lib\net5.0" />
+    <file src="..\Normalizer\Universe.Fias.Normalizer\bin\Release\net5.0\Universe.Fias.Core.dll" target="lib\net5.0" />
+    <file src="..\Normalizer\Universe.Fias.Normalizer\bin\Release\net5.0\Universe.Fias.DataAccess.dll" target="lib\net5.0" />
+    <file src="..\Normalizer\Universe.Fias.Normalizer\bin\Release\net5.0\Universe.Fias.Helpers.dll" target="lib\net5.0" />
+    <file src="..\Normalizer\Universe.Fias.Normalizer\bin\Release\net5.0\Universe.Fias.IO.dll" target="lib\net5.0" />
+  </files>
+</package>

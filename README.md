@@ -1,92 +1,113 @@
 # Universe.FIAS
 
 
+# Контроль версий    
+Для удобства проект нужно клонировать по локальному пути C:\P\Universe.Framework.Core\ (но это совсем не обязательно)
+*  master - основная рабочая ветка, изменения в нее попадают только через MergeRequests
+*  develop - вторая основная рабочая ветка, изменения в нее попадают также, через MergeRequests
 
-## Getting started
+Для каждой задачи разработки/исправления ошибки заводится отдельный бранч.  
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+*Создается прямо из задачи, необходимо в названии задачи, ошибки, перед созданием указывать в скобках на английском языке не очень длинное наименование бранча.*
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## Правила формирования сообщений к комиту
+Сообщение может быть многострочным, например:  
+#89 [Universe.FIAS] Добавлен поиск домов.  
+#89 [Common]: Изменены ссылки на проекты.  
+#89 [Universe.FIAS, Universe.FIAS.Normalizer] Добавлена функция нормализации адреса. 
 
-## Add your files
+где:
+*  #89 - номер задачи (как правило совпадает с номером бранча) - в gitlab будет превращаться в ссылку на задачу,
+  а при наведении мыши покажет название задачи
+*  "Universe.FIAS:"" название функционала, в рамках которого делается коммит. Обязательно указывается с двоеточием на конце.
+*  "Добавлена авторизация в web-приложении." - текст описывающий, что было сделано. Обязательно с точкой в конце, завершающей предложение.
+*  Может быть перечислено несколько действий записываемые подобным образом
+  н-р "#89 [Universe.FIAS]: Добавлены индексы в БД ФИАС. Оптимизированы запросы.""
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+*  [\~] - указываем в начале строки коммита, если мержим файлы вручную (автоматом git сам формирует сообщение). Сообщение должно быть вида:  
+    [\~] Merge from develop to 20-build-ef-data-access-layer  
+    или  
+    [\~] Merge from develop to #20 
 
-```
-cd existing_repo
-git remote add origin https://gitlab.com/AlexEnvision/Universe.FIAS.git
-git branch -M main
-git push -uf origin main
-```
+# Средства разработки
+Для разработки использовать VS 2017, VS2019 дополнительно должны быть установлены:
+*  поддержка PowerShell проектов (это устанавливается при устаноке VS)
+*  git интегрируемый в студию (это устанавливается при устаноке VS)
+*  ReSharper 2016.2.2 или более новый
+*  Если после обновления из ветки develop, у проектов слетели References, а в ошибке фигурирует "NuGet", можно сделать следующее:
+   на Solution нажать правую кнопку мыши и выбрать и выбрать Restore NuGet Packages. Затем Clean solution, build solution.
+*  Чтобы NuGet ресторил сборки автоматически, нужно сделать следующее:
+   в меню Tools - Options - NuGet Package Manager выставить 2 галки:
+   - Allow NuGet to download missing packages;
+   - Automaticall check for missing packages during build in Visual Studio.
+*  MSSQL Server 2014 и выше
+* Visual Stidio Code 1.42 и выше
 
-## Integrate with your tools
+# Версии ПО/платформ/ библиотек
+*  MSSQL 2019 (Build 16.100.46041.41) 
 
-- [ ] [Set up project integrations](https://gitlab.com/AlexEnvision/Universe.FIAS/-/settings/integrations)
+# Обратить внимание
+*  На кодировку файлов (особенно *.ps1), должна быть UTF-8
 
-## Collaborate with your team
+# Coding Style
+*  По оформлению кода придерживаться настроек решарпера в файле ReSharper.DotSettings
+* !Перед коммитом обязательно выполнять реформат измененного кода по схеме ResharperSln (исключением является кодоген и код
+ сгененированны T4 шаблоном) 
+*  При реформате выбирать профиль ResharperSln для полного реформата, ResharperSln NoSort для классов в которых нельзя изменять порядок
+*  Блок catch, если в блоке catch, нет `throw ...;`, то необходимо указать комментарий почему его тут нет, например
+ как в примере ниже  
+ Если в блоке catch создается новый инстанс ошибки, то обязательно необходимо указать исходную ошибку, или комментарий
+ почему исходная ошибка не должна указываться.
+```c#
+catch (Exception ex) {
+    _log.Unexpected(ex);
+    //throw; Что бы здесь не произошло, это не должно повлиять на выполнение всего остального
+}
+````
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+# Инструкция по установке
 
-## Test and Deploy
+1. Установить AccessDatabaseEngine_X64 из папки Support.
+	Загрузить и установить архиватор 7-zip с сайта https://www.7-zip.org.
+	Установить MSSQL Server 2019 и развернуть инстанс баз данных.
+	
+2. Убедиться, что установлена русская локаль и язык русский. 
+	А также должен быть установлен в качестве языка программ не поддерживающих Юникод: Русский.
 
-Use the built-in continuous integration in GitLab.
+![alt text](src/Manual/Images/region-lang-settings.png "Региональные настройки")
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+    В приложении преобразования нажать на кнопку Сформировать/Обновить БД и сформировать FIAS-DB:
 
-***
+![alt text](src/Manual/Images/downloader-and-converter-create-db.png "Создание и формирование структуры базы данных")
 
-# Editing this README
+    После того, как БД будет сформирована проверить, что БД создалась с Collation Cyrillic_General_CI_AS. 
+	    
+3. Перед запуском приложений преобразования и импорта убедится, что на жёстком диске имеется не менее 80 Гб свободного дискового пространства.
+	
+4. Запустить и настроить загрузку файлос с ФИАС и их преобразование в CSV FIAS.ConvertApp.
+   Настройки примерно следующие:
+	     
+![alt text](src/Manual/Images/downloader-and-converter-settings.png "Настройки приложения загрузки и преобразования"),
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+	* В размещении файлов ФИАС указываем, куда будет загружен архив с файлами баз данных в формате DBF.
+	* В текстовом поле 'Путь к 7-zip' указываем, расположение исполняемого файла архиватора 7-zip.
+	* В текстовом поле 'Путь преобразованным к CSV-файлам' указываем, куда будут сохранены преобразованные в CSV файлы.
+	* В текстовом поле 'Строка подключения к БД ФИАС' указываем строку подключения к формируемой БД ФИАС.
+	* Если не был заранее скачан архив с сайта nalog.ru, то отметить галочкой пункт 'Скачать базу с nalog.ru'.
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+Нажать кнопку 'Загрузить/Преобразовать в CSV', затем дождаться окончания выполнения.
 
-## Name
-Choose a self-explaining name for your project.
+5. Загрузка CSV в БД ФИАС FIAS.ImportApp.
+   Настройки примерно следующие:
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+![alt text](src/Manual/Images/import-settings.png "Настройки приложения импорта"),
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+	* В размещении файлов ФИАС указываем, куда был загружен архив файлами баз данных в формате DBF.
+	* В текстовом поле 'Путь к 7-zip' указываем, расположение исполняемого файла архиватора 7-zip.
+	* В текстовом поле 'Путь преобразованным к CSV-файлам' указываем, преобразованные в CSV файлы,
+	которые будут импортироваться в БД ФИАС.
+	* В текстовом поле 'Строка подключения к БД ФИАС' указываем строку подключения к формируемой БД ФИАС.
+	* По-умолчанию возможность загружать дома отключена. Если необходимо загрузить дома в БД ФИАС,
+	то нужно отметить галочкой пункт 'Импортировать дома'.
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+Нажать кнопку 'Импорт', затем дождаться окончания выполнения.

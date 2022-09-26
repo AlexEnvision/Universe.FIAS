@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Platforms>AnyCPU;x64</Platforms>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Universe.Fias.IO.snk</AssemblyOriginatorKeyFile>
+    <FileVersion>0.9.4.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Universe.NetCore.IO" Version="0.9.3.5" />
+    <PackageReference Include="Universe.NetCore.Types" Version="0.9.3.5" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Universe.Fias.Core.snk</AssemblyOriginatorKeyFile>
+    <FileVersion>0.9.4.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Unity" Version="5.11.9" />
+    <PackageReference Include="Universe.NetCore.CQRS" Version="0.9.3.5" />
+    <PackageReference Include="Universe.NetCore.DataAccess" Version="0.9.3.5" />
+    <PackageReference Include="Universe.NetCore.Helpers" Version="0.9.3.5" />
+    <PackageReference Include="Universe.NetCore.IO" Version="0.9.3.5" />
+    <PackageReference Include="Universe.NetCore.Types" Version="0.9.3.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Universe.Fias.DataAccess\Universe.Fias.DataAccess.csproj" />
+    <ProjectReference Include="..\Universe.Fias.IO\Universe.Fias.IO.csproj" />
+  </ItemGroup>
+
+</Project>

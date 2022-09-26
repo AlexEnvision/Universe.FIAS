@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Universe.Fias.DataContracts.snk</AssemblyOriginatorKeyFile>
+    <FileVersion>0.9.4.0</FileVersion>
+  </PropertyGroup>
+
+</Project>

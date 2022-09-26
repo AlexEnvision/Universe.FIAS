@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Universe.Fias.Helpers.snk</AssemblyOriginatorKeyFile>
+    <FileVersion>0.9.4.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Universe.NetCore.Helpers" Version="0.9.3.5" />
+  </ItemGroup>
+
+</Project>

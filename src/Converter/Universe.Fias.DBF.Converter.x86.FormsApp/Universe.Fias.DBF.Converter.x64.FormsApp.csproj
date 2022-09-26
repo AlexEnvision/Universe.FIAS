@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Platforms>AnyCPU;x86;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Universe.NetCore.Algorithm" Version="0.9.3.5" />
+    <PackageReference Include="Universe.NetCore.Windows.Forms.Controls" Version="0.9.3.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Universe.Fias.Core\Universe.Fias.Core.csproj" />
+    <ProjectReference Include="..\..\Universe.Fias.DataAccess\Universe.Fias.DataAccess.csproj" />
+    <ProjectReference Include="..\Universe.Fias.DBF.Converter\Universe.Fias.DBF.Converter.x64.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+
+</Project>
