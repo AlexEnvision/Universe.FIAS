@@ -10,18 +10,18 @@ using Universe.Helpers.Extensions;
 namespace Universe.Fias.Import.Algorithms.AddressSystem
 {
     /// <summary>
-    /// Address system operations on versions.
+    ///     Address system operations on versions.
     /// </summary>
     public class AsVersionsBOper
     {
-        private readonly UniverseFiasDbContext _db;
+        private readonly IUniverseFiasDbContext _db;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AsVersionsBOper"/> class.
         /// </summary>
         /// <param name="db">The database.</param>
         /// <exception cref="System.ArgumentNullException">db</exception>
-        public AsVersionsBOper([NotNull] UniverseFiasDbContext db)
+        public AsVersionsBOper([NotNull] IUniverseFiasDbContext db)
         {
             if (db == null)
                 throw new ArgumentNullException(nameof(db));

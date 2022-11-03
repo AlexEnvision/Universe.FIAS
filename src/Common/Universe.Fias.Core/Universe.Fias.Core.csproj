@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\EFDB\Universe.Fias.DataAccess.Npg\Universe.Fias.DataAccess.Npg.csproj" />
     <ProjectReference Include="..\..\Universe.Fias.DataAccess\Universe.Fias.DataAccess.csproj" />
     <ProjectReference Include="..\Universe.Fias.IO\Universe.Fias.IO.csproj" />
   </ItemGroup>

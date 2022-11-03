@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Universe.Fias.Core.Infrastructure.DatabaseContexts;
 using Universe.Fias.DataAccess;
 using Universe.Fias.IO.Compression;
 using Universe.Helpers.Extensions;
@@ -55,13 +56,13 @@ namespace Universe.Fias.Core.Infrastructure.Impl
         /// обязательно нужно вызвать Dispose.
         /// </summary>
         /// <returns></returns>
-        public UniverseFiasDbContext CreateUniverseFiasDb()
+        public IUniverseFiasDbContext CreateUniverseFiasDb()
         {
             lock (_sync)
             {
                 var conStr = _scope.Settings.ConnectionString;
                 using (new RunAsAppPoolScope())
-                    return _createdDisposableObjects.AddIfIDisposable(() => new UniverseFiasDbContext(conStr));
+                    return _createdDisposableObjects.AddIfIDisposable(() => UniverseFiasDbContextFactory.Initialize.Create(conStr, _scope.DbSystemManagementType));
             }
         }
 

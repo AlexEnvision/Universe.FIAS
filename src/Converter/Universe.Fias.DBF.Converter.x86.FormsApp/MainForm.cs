@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Windows.Forms;
 using Universe.Algorithm.MultiThreading;
+using Universe.CQRS.Models.Enums;
 using Universe.Diagnostic.Logger;
+using Universe.Fias.Core.Extensions;
+using Universe.Fias.Core.Infrastructure.DatabaseContexts;
 using Universe.Fias.DataAccess;
 using Universe.Fias.DataContracts;
 using Universe.Fias.DBF.Converter.x64.Algorithms.AddressSystem;
@@ -89,6 +92,16 @@ namespace Universe.Fias.DBF.Converter.x64.FormsApp
             var addrSysImportBaseFolderPath = tbAddrSysImportBaseFolderPath.Text;
             _programSettings.Default.AddrSysConvertedCsvFilesPath = tbConvertedCsvFilesPath.Text;
 
+            var connectionString = tbConnectionString.Text;
+            if (connectionString.IsNullOrEmpty())
+            {
+                _log.Info("Не указана строка подключения к базе данных. Укажите строку подключения и попробуйте запустить миграцию базы данных снова.");
+                return;
+            }
+
+            _programSettings.Default.ConnectionString = connectionString;
+            var dbType = connectionString.DeterminateDbTypeFromConnectionString();
+
             ThreadMachine = ThreadMachine.Create(1).RunInMultiThreadsWithoutWaiting(() =>
             {
                 try
@@ -97,6 +110,7 @@ namespace Universe.Fias.DBF.Converter.x64.FormsApp
                         _log,
                         _programSettings.Default,
                         addrSysImportBaseFolderPath,
+                        dbType,
                         new AddrSysDownloaderSettings
                         {
                             Enable = addrSysImportFiasDownloadServiceEnable,
@@ -169,20 +183,23 @@ namespace Universe.Fias.DBF.Converter.x64.FormsApp
                 return;
             }
 
+            _programSettings.Default.ConnectionString = connectionString;
+            var dbType = connectionString.DeterminateDbTypeFromConnectionString();
+
             ThreadMachine.Create(1).RunInMultiThreadsWithoutWaiting(() => {
                 try
                 {
                     var commandTimeout = 60 * 60;
 
                     _log.Info("Запуск миграции модельной БД...");
-                    using (var dbContext = new UniverseFiasDbContext(connectionString))
+                    using (var dbContext = UniverseFiasDbContextFactory.Initialize.Create(connectionString, dbType))
                     {
                         dbContext.Migrate(commandTimeout);
                     }
                     _log.Info("Успешно завершена миграция модельной БД!");
 
                     _log.Info("Запуск \"контрольной\" миграции модельной БД...");
-                    using (var dbContext = new UniverseFiasDbContext(connectionString))
+                    using (var dbContext = UniverseFiasDbContextFactory.Initialize.Create(connectionString, dbType))
                     {
                         dbContext.Migrate(commandTimeout);
                     }

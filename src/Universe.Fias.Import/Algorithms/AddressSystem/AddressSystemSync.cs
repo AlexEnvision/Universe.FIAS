@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Universe.CQRS.Models.Enums;
 using Universe.Diagnostic.Logger;
 using Universe.Fias.Core.Infrastructure;
 using Universe.Fias.DataAccess.Models;
@@ -19,18 +20,21 @@ namespace Universe.Fias.Import.Algorithms.AddressSystem
     public class AddressSystemSync : DisposableObject
     {
         private EventLogger _logger;
+        private readonly DbSystemManagementTypes _dbType;
 
         private readonly AppSettings _settings;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AddressSystemSync"/> class.
         /// </summary>
-        /// <param name="logger"></param>
-        /// <param name="settings"></param>
+        /// <param name="logger">The log.</param>
+        /// <param name="dbType">The database type</param>
+        /// <param name="settings">Application settings.</param>
         /// <param name="baseFolderPath">The base folder path.</param>
         /// <exception cref="System.ArgumentNullException">baseFolderPath</exception>
         public AddressSystemSync(
             EventLogger logger,
+            DbSystemManagementTypes dbType,
             AppSettings settings,
             [NotNull] string baseFolderPath)
         {
@@ -41,6 +45,7 @@ namespace Universe.Fias.Import.Algorithms.AddressSystem
             FolderManager = new AddrSysFolderManager(BaseFolderPath);
 
             _logger = logger;
+            _dbType = dbType;
             _settings = settings;
         }
 
@@ -69,7 +74,7 @@ namespace Universe.Fias.Import.Algorithms.AddressSystem
             var container = UnityConfig.Container;
 
             var resolver = new AppPrincipalResolver();
-            var scope = new UniverseFiasScope(resolver, _settings, container);
+            var scope = new UniverseFiasScope(resolver, _settings, container, _dbType);
 
             var isProcesed = true;
             scope.UniverseFiasDb(

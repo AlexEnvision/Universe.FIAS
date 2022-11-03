@@ -114,8 +114,7 @@ namespace Universe.Fias.Normalizer.Algorithms.AddressSystem.Utils
 
             var types = new MatList<AddressTypeDto>();
             types += new AddressTypeDto { Id = ++lastIndex, Name = "Проспект", ShortName = "п-кт", Level = 65 };
-            types += new AddressTypeDto { Id = ++lastIndex, Name = "Проспект", ShortName = "пр-кт", Level = 65 };
-            types += new AddressTypeDto { Id = ++lastIndex, Name = "Проспект", ShortName = "пр.", Level = 65 };
+			types += new AddressTypeDto { Id = ++lastIndex, Name = "Проспект", ShortName = "пр.", Level = 65 };
             types += new AddressTypeDto { Id = ++lastIndex, Name = "Проспект", ShortName = "просп", Level = 65 };
 
             types += new AddressTypeDto { Id = ++lastIndex, Name = "Проезд", ShortName = "пр.", Level = 65 };

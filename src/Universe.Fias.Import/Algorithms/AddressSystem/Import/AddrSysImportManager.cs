@@ -9,6 +9,7 @@ using Universe.CQRS.Dal.Commands;
 using Universe.CQRS.Dal.Queries;
 using Universe.CQRS.Extensions;
 using Universe.CQRS.Infrastructure;
+using Universe.CQRS.Models.Enums;
 using Universe.Diagnostic.Logger;
 using Universe.Fias.Core.Infrastructure;
 using Universe.Fias.DataAccess.Models;
@@ -530,9 +531,12 @@ namespace Universe.Fias.Import.Algorithms.AddressSystem.Import
             }
 
             var dbName = importContext.Scope.DbCtx.Database.Connection.Database;
-            // Удаление всех записей из таблицы AsAddrObjs
-            importContext.Scope.GetQuery<UniverseFiasDirectSqlQuery<AsAddrObj>>().Execute(
-                @$"USE [{dbName}]; 
+
+            if (_scope.DbSystemManagementType == DbSystemManagementTypes.MSSql)
+            {
+                // Удаление всех записей из таблицы AsAddrObjs
+                importContext.Scope.GetQuery<UniverseFiasDirectSqlQuery<AsAddrObj>>().Execute(
+                    @$"USE [{dbName}]; 
                    DELETE FROM [dbo].[AsAddrObjs];
                    TRUNCATE TABLE [dbo].[AsAddrObjs];
                    SET IDENTITY_INSERT [dbo].[AsAddrObjs] ON 
@@ -546,12 +550,12 @@ namespace Universe.Fias.Import.Algorithms.AddressSystem.Import
                           [CentStatusId],[OperStatusId],[NextId],[PrevId],[TypeId]  
                      FROM [dbo].[AsAddrObjs]
                 ",
-                60 * 60
-            );
+                    60 * 60
+                );
 
-            // Удаление всех записей из таблицы AsHouses
-            importContext.Scope.GetQuery<UniverseFiasDirectSqlQuery<AsHouse>>().Execute(
-                @$"USE [{dbName}]; 
+                // Удаление всех записей из таблицы AsHouses
+                importContext.Scope.GetQuery<UniverseFiasDirectSqlQuery<AsHouse>>().Execute(
+                    @$"USE [{dbName}]; 
                    DELETE FROM [dbo].[AsHouses];
                    TRUNCATE TABLE [dbo].[AsHouses];
                    SET IDENTITY_INSERT [dbo].[AsHouses] ON 
@@ -564,8 +568,31 @@ namespace Universe.Fias.Import.Algorithms.AddressSystem.Import
                           [RegionCode],[EstStatusId],[StrStatusId]  
                      FROM [dbo].[AsHouses]
                 ",
-                60 * 60
-            );
+                    60 * 60
+                );
+            }
+
+            if (_scope.DbSystemManagementType == DbSystemManagementTypes.PostgreSQL)
+            {
+                // Удаление всех записей из таблицы AsAddrObjs
+                importContext.Scope.GetQuery<UniverseFiasDirectSqlQuery<AsAddrObj>>().Execute(
+                    @$" 
+	                   DELETE FROM dbo.""AsAddrObjs"";
+	                   TRUNCATE TABLE dbo.""AsAddrObjs"" RESTART IDENTITY;;
+	                   SELECT * FROM dbo.""AsAddrObjs""
+	                ",
+                    60 * 60
+                );
+                // Удаление всех записей из таблицы AsHouses
+                importContext.Scope.GetQuery<UniverseFiasDirectSqlQuery<AsHouse>>().Execute(
+                    @$"
+	                   DELETE FROM dbo.""AsHouses"";
+	                   TRUNCATE TABLE dbo.""AsHouses"" RESTART IDENTITY;;
+	                   SELECT * FROM dbo.""AsHouses""
+	                ",
+                    60 * 60
+                );
+            }
 
             while (queueTasks.Count > 0)
             {

@@ -283,6 +283,7 @@ namespace Universe.Fias.DBF.Converter.x64.Algorithms.AddressSystem
 
                 var webClient = new AddrSysWebClient();
                 webClient.DownloadProgressChanged += (sender, args) => { DownloadProgressChanged(_logger, args); };
+                //webClient.DownloadProgressPartiallyChanged += (sender, args) => { DownloadProgressChanged(_logger, args); };
 
                 _logger.Info($"Start download {urlForDownload} to {filePath}");
 
@@ -298,6 +299,7 @@ namespace Universe.Fias.DBF.Converter.x64.Algorithms.AddressSystem
                     throw new ArgumentNullException(nameof(urlForDownload));
 
                 await webClient.DownloadFileTaskAsync(new Uri(urlForDownload), filePath);
+                //await webClient.DownloadFilePartiallyAsync(new Uri(urlForDownload), filePath, 3600);
                 _logger.Info($"End download {urlForDownload} to {filePath}");
 
                 _scope.UniverseFiasDb(
@@ -309,8 +311,33 @@ namespace Universe.Fias.DBF.Converter.x64.Algorithms.AddressSystem
             catch (Exception ex)
             {
                 _logger.Error(ex, $"Error download {urlForDownload} to {filePath}: {ex.Message}");
-                //throw; шаг загрузки не удался... В самом шаге это будет отмечено
+                throw; //шаг загрузки не удался... В самом шаге это будет отмечено
             }
+        }
+
+        /// <summary>
+        /// Downloads the progress changed.
+        /// </summary>
+        /// <param name="logger">The log step.</param>
+        /// <param name="args">The <see cref="DownloadProgressChangedEventArgs"/> instance containing the event data.</param>
+        private void DownloadProgressChanged(EventLogger logger, System.Net.DownloadProgressChangedEventArgs args)
+        {
+            lock (logger)
+                if (args.TotalBytesToReceive == args.BytesReceived)
+                {
+                    var seconds = DateTime.Now.Second;
+                    if (seconds % 15 == 0)
+                    {
+                        var bytesReceived = args.BytesReceived;
+                        logger.Info($"Принято данных: {bytesReceived} MiB");
+
+                        var totalMbReceived = args.TotalBytesToReceive / (1024 * 1024);
+                        logger.Info($"Всего принято данных: {totalMbReceived} MiB");
+
+                        var progressPercentage = args.ProgressPercentage;
+                        logger.Info($"Процент загрузки: {progressPercentage} %");
+                    }
+                }
         }
 
         /// <summary>
