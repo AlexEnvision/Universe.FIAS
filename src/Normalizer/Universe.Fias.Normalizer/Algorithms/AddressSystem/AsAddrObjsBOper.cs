@@ -24,7 +24,8 @@ namespace Universe.Fias.Normalizer.Algorithms.AddressSystem
     /// <seealso cref="DisposableObject"/>
     public class AsAddrObjsBOper : DisposableObject
     {
-        private UniverseFiasDbContext _db;
+        private IUniverseFiasDbContext _db;
+
         private Dictionary<string, List<AsAddrObjType>> _indexedByNameTypes;
         private List<AsAddrObjType> _cityTypes;
         private UniverseFiasScope _scope;

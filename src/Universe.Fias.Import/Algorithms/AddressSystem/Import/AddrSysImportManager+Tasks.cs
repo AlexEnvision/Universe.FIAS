@@ -13,6 +13,7 @@ using Universe.CQRS.Dal.Commands.CommandResults.Base;
 using Universe.CQRS.Dal.Queries;
 using Universe.CQRS.Extensions;
 using Universe.CQRS.Infrastructure;
+using Universe.CQRS.Models.Enums;
 using Universe.Diagnostic.Logger;
 using Universe.Fias.Core.Infrastructure;
 using Universe.Fias.DataAccess.Models;
@@ -483,7 +484,18 @@ namespace Universe.Fias.Import.Algorithms.AddressSystem.Import
                                 var command = scope.GetCommand<UpdateAsEntitiesBatchCommand<AsAddrObj>>();
                                 command.ConnectionString = (scope as UniverseFiasScope)?.Settings.ConnectionString;
 
-                                var result = command.BatchProcess(keySelector: x => x.Id, entityDbs);
+                                if (scope.DbSystemManagementType == DbSystemManagementTypes.MSSql)
+                                {
+                                    // Массовая вставка для MSSql
+                                    var result = command.BatchProcess(keySelector: x => x.Id, entityDbs);
+                                }
+
+                                if (scope.DbSystemManagementType == DbSystemManagementTypes.PostgreSQL)
+                                {
+                                    // Обычная вставка для Postgres т.к BatchProcess не поддерживаются для Postgres
+                                    var result = scope.GetCommand<AddEntitiesCommand<AsAddrObj>>().Execute(entityDbs);
+                                }
+
                                 return new MatList<BaseCommandResult> { };
                             }
                         },
@@ -587,7 +599,17 @@ namespace Universe.Fias.Import.Algorithms.AddressSystem.Import
                                 var command = scope.GetCommand<UpdateAsEntitiesBatchCommand<AsHouse>>();
                                 command.ConnectionString = (scope as UniverseFiasScope)?.Settings.ConnectionString;
 
-                                var result = command.BatchProcess(keySelector: x => x.Id, entityDbs);
+                                if (scope.DbSystemManagementType == DbSystemManagementTypes.MSSql)
+                                {
+                                    var result = command.BatchProcess(keySelector: x => x.Id, entityDbs);
+                                }
+
+                                if (scope.DbSystemManagementType == DbSystemManagementTypes.PostgreSQL)
+                                {
+                                    // Обычная вставка для Postgres т.к BatchProcess не поддерживаются для Postgres
+                                    var result = scope.GetCommand<AddEntitiesCommand<AsHouse>>().Execute(entityDbs);
+                                }
+
                                 return new MatList<BaseCommandResult> { };
                             }
                         }

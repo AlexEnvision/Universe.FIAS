@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using Universe.Algorithm.MultiThreading;
+using Universe.CQRS.Models.Enums;
 using Universe.Diagnostic;
 using Universe.Diagnostic.Logger;
+using Universe.Fias.Core.Extensions;
 using Universe.Fias.Core.Infrastructure;
-using Universe.Fias.DataAccess;
+using Universe.Fias.Core.Infrastructure.DatabaseContexts;
 using Universe.Fias.Normalizer.Algorithms.AddressSystem;
 using Universe.Fias.Normalizer.Algorithms.AddressSystem.Settings;
 using Universe.Fias.Normalizer.FormsApp.Infrastructure;
@@ -113,18 +115,28 @@ namespace Universe.Fias.Normalizer.FormsApp
             btMigrateDb.Enabled = false;
             btSync.Enabled = false;
 
+            var connectionString = tbConnectionString.Text;
+            if (connectionString.IsNullOrEmpty())
+            {
+                _log.Info("Не указана строка подключения!");
+                return;
+            }
+
+            _programSettings.Default.ConnectionString = connectionString;
+            var dbType = connectionString.DeterminateDbTypeFromConnectionString();
+
             ThreadMachine.Create(1).RunInMultiThreadsWithoutWaiting(() => {
                 try
                 {
                     _log.Info("Запуск миграции модельной БД...");
-                    using (var dbContext = new UniverseFiasDbContext(_programSettings.Default.ConnectionString))
+                    using (var dbContext = UniverseFiasDbContextFactory.Initialize.Create(connectionString, dbType))
                     {
                         dbContext.Migrate();
                     }
                     _log.Info("Успешно завершена миграция модельной БД!");
 
                     _log.Info("Запуск \"контрольной\" миграции модельной БД...");
-                    using (var dbContext = new UniverseFiasDbContext(_programSettings.Default.ConnectionString))
+                    using (var dbContext = UniverseFiasDbContextFactory.Initialize.Create(connectionString, dbType))
                     {
                         dbContext.Migrate();
                     }
@@ -157,6 +169,9 @@ namespace Universe.Fias.Normalizer.FormsApp
                 return;
             }
 
+            _programSettings.Default.ConnectionString = connectionString;
+            var dbType = connectionString.DeterminateDbTypeFromConnectionString();
+
             ThreadMachine = ThreadMachine.Create(1).RunInMultiThreadsWithoutWaiting(() =>
             {
                 try
@@ -170,7 +185,7 @@ namespace Universe.Fias.Normalizer.FormsApp
                         connectionString;
 
                     var resolver = new AppPrincipalResolver();
-                    var scope = new UniverseFiasScope(resolver, settings, container);
+                    var scope = new UniverseFiasScope(resolver, settings, container, dbType);
 
                     using (var watcher = new RunningTimeWatcher())
                     {

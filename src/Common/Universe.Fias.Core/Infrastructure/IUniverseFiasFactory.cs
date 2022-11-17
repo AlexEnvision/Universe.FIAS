@@ -29,6 +29,6 @@ namespace Universe.Fias.Core.Infrastructure
         ///     обязательно нужно вызвать Dispose.
         /// </summary>
         /// <returns></returns>
-        UniverseFiasDbContext CreateUniverseFiasDb();
+        IUniverseFiasDbContext CreateUniverseFiasDb();
     }
 }

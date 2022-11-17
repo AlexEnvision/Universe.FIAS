@@ -1,28 +1,28 @@
 ﻿using System;
 using System.Data.Entity;
-using System.Data.Entity.Core.Objects;
-using System.Data.Entity.Infrastructure;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
-using Universe.Fias.DataAccess.Models;
-using Universe.DataAccess;
 using Universe.DataAccess.Mappings.Framework;
+using Universe.DataAccess.Npg;
 using Universe.Fias.DataAccess.Extensions;
-using Universe.Fias.DataAccess.Migrations;
+using Universe.Fias.DataAccess.Models;
+using Universe.Fias.DataAccess.Npg.Migrations;
 
-namespace Universe.Fias.DataAccess
+namespace Universe.Fias.DataAccess.Npg
 {
-    public partial class UniverseFiasDbContext : UniverseDbContext, IUniverseFiasDbContext
+    public class UniverseFiasNpgDbContext: UniverseNpgDbContext<UniverseFiasNpgDbContext, Configuration>, IUniverseFiasDbContext  
+        // :DbContext - расскомментировать и заменить :UniverseNpgDbContext<UniverseFiasNpgDbContext, Configuration>, IUniverseFiasDbContext  при добавлении миграций
+        // через Add-Migration
     {
         private SqlDbContextExt _ext;
 
-        public UniverseFiasDbContext()
-            : base("UniverseFiasDb")
+        public UniverseFiasNpgDbContext()
+            : base()
         {
             SetConfigurationOptions();
         }
 
-        public UniverseFiasDbContext(string connectionString) : base(connectionString)
+        public UniverseFiasNpgDbContext(string connectionString) : base(connectionString)
         {
             SetConfigurationOptions();
         }
@@ -49,7 +49,7 @@ namespace Universe.Fias.DataAccess
                 map.Apply(modelBuilder);
             }
         }
-    
+
         public virtual DbSet<AsActStatus> AsActStatuses { get; set; }
 
         public virtual DbSet<AsAddrObj> AsAddrObjs { get; set; }
@@ -70,32 +70,6 @@ namespace Universe.Fias.DataAccess
 
         public virtual DbSet<AsVersionFile> AsVersionFiles { get; set; }
 
-        public virtual int AsImportActStatuses(Nullable<bool> insert, Nullable<bool> update, Nullable<bool> deleteIfMatched, Nullable<bool> deleteIfNotMatchedBySource)
-        {
-            var insertParameter = insert.HasValue ?
-                new ObjectParameter("insert", insert) :
-                new ObjectParameter("insert", typeof(bool));
-    
-            var updateParameter = update.HasValue ?
-                new ObjectParameter("update", update) :
-                new ObjectParameter("update", typeof(bool));
-    
-            var deleteIfMatchedParameter = deleteIfMatched.HasValue ?
-                new ObjectParameter("deleteIfMatched", deleteIfMatched) :
-                new ObjectParameter("deleteIfMatched", typeof(bool));
-    
-            var deleteIfNotMatchedBySourceParameter = deleteIfNotMatchedBySource.HasValue ?
-                new ObjectParameter("deleteIfNotMatchedBySource", deleteIfNotMatchedBySource) :
-                new ObjectParameter("deleteIfNotMatchedBySource", typeof(bool));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("AsImportActStatuses", insertParameter, updateParameter, deleteIfMatchedParameter, deleteIfNotMatchedBySourceParameter);
-        }
-    
-        public virtual int AsSetThereAreStreets()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("AsSetThereAreStreets");
-        }
-
         private void SetConfigurationOptions()
         {
             Configuration.LazyLoadingEnabled = false;
@@ -107,7 +81,7 @@ namespace Universe.Fias.DataAccess
         /// </summary>
         public void Migrate(int commandTimeout = 300)
         {
-            Database.SetInitializer(new MigrateDatabaseToLatestVersion<UniverseFiasDbContext, Configuration>(true, new Configuration
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<UniverseFiasNpgDbContext, Configuration>(true, new Configuration
             {
                 CommandTimeout = commandTimeout
             }));
