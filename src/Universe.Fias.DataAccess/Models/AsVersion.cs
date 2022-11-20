@@ -43,5 +43,25 @@ namespace Universe.Fias.DataAccess.Models
 
         [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AsVersionFile> AsVersionFiles { get; set; }
+
+        /// <summary>
+        ///     Путь к папке с XML GAR
+        /// </summary>
+        public string FiasXmlFolderPath { get; set; }
+
+        /// <summary>
+        ///     Путь к архиву с XML GAR
+        /// </summary>
+        public string FiasXmlArchivePath { get; set; }
+
+        /// <summary>
+        ///     Загружен полный GAR XML?
+        /// </summary>
+        public bool? IsDownloadedFiasFullXml { get; set; }
+
+        /// <summary>
+        ///     Загружена изменения GAR XML?
+        /// </summary>
+        public bool? IsDownloadedFiasDeltaXml { get; set; }
     }
 }

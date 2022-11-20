@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Universe.NetCore.Diagnostic" Version="0.9.3.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Universe.Fias.Core\Universe.Fias.Core.csproj" />
+    <ProjectReference Include="..\..\Common\Universe.Fias.DataContracts\Universe.Fias.DataContracts.csproj" />
+    <ProjectReference Include="..\..\Common\Universe.Fias.Helpers\Universe.Fias.Helpers.csproj" />
+    <ProjectReference Include="..\..\Universe.Fias\Universe.Fias.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Algorithms\AddressSystem\Loader\AddrSysWebClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
+  </ItemGroup>
+
+</Project>
